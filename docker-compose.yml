@@ -4,3 +4,5 @@
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - 9650:8080
