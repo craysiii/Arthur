@@ -44,4 +44,6 @@ public class PdfDocumentRequest
     public ResponseFormat? ResponseFormat { get; set; } = Enums.ResponseFormat.PDF;
     [RegularExpression(@"^[\w\-. ]+\.pdf")]
     public string? FileName { get; set; }
+    [Range(0, int.MaxValue, ErrorMessage = "PageRenderDelay must be greater than 0")]
+    public int? PageRenderDelay { get; set; }
 }

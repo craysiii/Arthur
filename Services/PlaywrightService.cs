@@ -68,6 +68,9 @@ public class PlaywrightService
             Media = Media.Screen
         });
         
+        // Optionally wait for page to render according to user input
+        await Task.Delay(request.PageRenderDelay ?? 0);
+        
         // Generate PDF
         await currentPage.PdfAsync(pdfOptions);
 
