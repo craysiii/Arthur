@@ -1,0 +1,6 @@
+﻿services:
+  arthur:
+    image: arthur
+    build:
+      context: .
+      dockerfile: Dockerfile
