@@ -1,8 +1,6 @@
 ﻿services:
   arthur:
-    image: arthur
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: 'craysiii/arthur:latest'
+    restart: unless-stopped
     ports:
       - 9650:8080
