@@ -21,6 +21,8 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 // Add our service to control the browser
 builder.Services.AddSingleton<PlaywrightService>();
 
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();

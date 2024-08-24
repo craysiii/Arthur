@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Arthur.Services;
+﻿namespace Arthur.Services;
 
 public class PlaywrightService
 {
@@ -40,7 +38,7 @@ public class PlaywrightService
         var html = Base64.FromBase64ToString(request.EncodedTemplate);
         await File.WriteAllTextAsync(htmlFilePath, html);
 
-        return await GeneratePdfFile($"{context.Request.Host}/{fileGuid}", request, pdfFilePath);
+        return await GeneratePdfFile($"http://localhost:8080/{fileGuid}", request, pdfFilePath);
     }
     
     internal async Task<string> GeneratePdfFromUrl(UrlRequest request)
@@ -139,7 +137,7 @@ public class PlaywrightService
 
     private static void GenerateHeightOptions(PagePdfOptions pdfOptions, PdfDocumentRequest properties, IPage page)
     {
-        // SinglePage has the higher precedence, so calculate it first and return if its true
+        // SinglePage has the higher precedence, so calculate it first and return if it's true
         if (properties.SinglePage == true)
         {
             var height = page.EvaluateAsync("document.body.scrollHeight").GetAwaiter().GetResult();
