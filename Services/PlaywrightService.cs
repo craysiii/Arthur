@@ -29,7 +29,7 @@ public class PlaywrightService
         await tempPage.GotoAsync("about:blank");
     }
 
-    internal async Task<string> GeneratePdfFromHtmlTemplate(HtmlRequest request)
+    internal async Task<string> GeneratePdfFromHtmlTemplate(HttpContext context, HtmlRequest request)
     {
         // Setup file paths
         var fileGuid = Guid.NewGuid().ToString();
@@ -40,7 +40,7 @@ public class PlaywrightService
         var html = Base64.FromBase64ToString(request.EncodedTemplate);
         await File.WriteAllTextAsync(htmlFilePath, html);
 
-        return await GeneratePdfFile(htmlFilePath, request, pdfFilePath);
+        return await GeneratePdfFile($"{context.Request.Host}/{fileGuid}", request, pdfFilePath);
     }
     
     internal async Task<string> GeneratePdfFromUrl(UrlRequest request)
@@ -52,7 +52,7 @@ public class PlaywrightService
         return await GeneratePdfFile(request.Url, request, pdfFilePath);
     }
 
-    internal async Task<string> GeneratePdfFile(string url, PdfDocumentRequest request, string pdfFilePath)
+    private async Task<string> GeneratePdfFile(string url, PdfDocumentRequest request, string pdfFilePath)
     {
         // Create new page and navigate to html file
         var currentPage = await _context.NewPageAsync();

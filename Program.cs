@@ -27,14 +27,23 @@ app.UseSwaggerUI();
 
 app.MapGet("/", () => "Welcome to Arthur.");
 
-app.MapPost("/from-base64", async (HtmlRequest template, PlaywrightService playwright) =>
+app.MapGet("/{documentId:guid}", (Guid documentId) =>
+{
+    var pdfDocumentPath = Path.Join(Path.GetTempPath(), $"{documentId}.html");
+    return
+        File.Exists(pdfDocumentPath) ?
+            Results.Text(File.ReadAllText(pdfDocumentPath), "text/html", Encoding.UTF8, 200) :
+            Results.NotFound();
+});
+
+app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, PlaywrightService playwright) =>
 {
     // Validate passed options
     var valid = MiniValidator.TryValidate(template, out var errors);
     if (!valid) return Results.ValidationProblem(errors);
     
     // Generate PDF
-    var pdfPath = await playwright.GeneratePdfFromHtmlTemplate(template);
+    var pdfPath = await playwright.GeneratePdfFromHtmlTemplate(context, template);
     
     // Return according to format
     switch (template.ResponseFormat)
