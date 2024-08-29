@@ -6,7 +6,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Arthur",
+        Description = "Small API to generate PDFs from either a URL or base64-encoded HTML",
+        Contact = new OpenApiContact
+        {
+            Name = "Charles Ray Shisler III",
+            Url = new Uri("https://github.com/craysiii/Arthur"),
+            Email = "charles@cray.io"
+        },
+        License = new OpenApiLicense
+        {
+            Name = "MIT License",
+            Url = new Uri("https://github.com/craysiii/Arthur/blob/main/LICENSE.txt")
+        }
+    });
+});
 
 // Serialization of enums to strings instead of ints
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -27,7 +46,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/", () => "Welcome to Arthur.");
+app.MapGet("/", () => "Welcome to Arthur.")
+    .WithName("index").WithOpenApi();
 
 app.MapGet("/{documentId:guid}", (Guid documentId) =>
 {
@@ -36,7 +56,7 @@ app.MapGet("/{documentId:guid}", (Guid documentId) =>
         File.Exists(pdfDocumentPath) ?
             Results.Text(File.ReadAllText(pdfDocumentPath), "text/html", Encoding.UTF8, 200) :
             Results.NotFound();
-});
+}).WithName("getDocument").WithOpenApi();
 
 app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, PlaywrightService playwright) =>
 {
@@ -61,7 +81,7 @@ app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, Pl
         default:
             return Results.BadRequest("You shouldn't be here.");
     }
-}).WithOpenApi();
+}).WithName("fromBase64").WithOpenApi();
 
 app.MapPost("/from-url", async (UrlRequest template, PlaywrightService playwright) =>
 {
@@ -86,6 +106,6 @@ app.MapPost("/from-url", async (UrlRequest template, PlaywrightService playwrigh
         default:
             return Results.BadRequest("You shouldn't be here.");
     }
-}).WithOpenApi();
+}).WithName("fromUrl").WithOpenApi();
 
 app.Run();

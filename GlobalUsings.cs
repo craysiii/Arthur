@@ -2,7 +2,9 @@
 global using System.ComponentModel.DataAnnotations;
 global using System.Text;
 
+global using Microsoft.OpenApi.Models;
 global using Microsoft.Playwright;
+
 global using MiniValidation;
 
 global using Arthur.Enums;
