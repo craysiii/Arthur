@@ -39,6 +39,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 
 // Add our service to control the browser
 builder.Services.AddSingleton<PlaywrightService>();
+builder.Services.AddSingleton<SimpleAuthService>();
 
 builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
@@ -58,8 +59,15 @@ app.MapGet("/{documentId:guid}", (Guid documentId) =>
             Results.NotFound();
 }).ExcludeFromDescription();
 
-app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, PlaywrightService playwright) =>
+app.MapPost("/from-base64",
+    async (HttpContext context, HtmlRequest template, PlaywrightService playwright, SimpleAuthService auth) =>
 {
+    // Verify auth
+    if (!auth.RequestAuthorized(context))
+    {
+        return Results.Unauthorized();
+    }
+    
     // Validate passed options
     var valid = MiniValidator.TryValidate(template, out var errors);
     if (!valid) return Results.ValidationProblem(errors);
@@ -83,8 +91,15 @@ app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, Pl
     }
 }).WithName("fromBase64").WithOpenApi();
 
-app.MapPost("/from-url", async (UrlRequest template, PlaywrightService playwright) =>
+app.MapPost("/from-url",
+    async (HttpContext context, UrlRequest template, PlaywrightService playwright, SimpleAuthService auth) =>
 {
+    // Verify auth
+    if (!auth.RequestAuthorized(context))
+    {
+        return Results.Unauthorized();
+    }
+    
     // Validate passed options
     var valid = MiniValidator.TryValidate(template, out var errors);
     if (!valid) return Results.ValidationProblem(errors);
