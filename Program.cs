@@ -1,5 +1,5 @@
 var exitCode = Microsoft.Playwright.Program.Main(["install", "--with-deps", "chromium"]);
-if (exitCode != 0) Environment.Exit(0);
+if (exitCode != 0) Environment.Exit(exitCode);
 
 var builder = WebApplication.CreateBuilder(args);
 
