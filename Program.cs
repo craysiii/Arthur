@@ -47,7 +47,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapGet("/", () => "Welcome to Arthur.")
-    .WithName("index").WithOpenApi();
+    .ExcludeFromDescription();
 
 app.MapGet("/{documentId:guid}", (Guid documentId) =>
 {
@@ -56,7 +56,7 @@ app.MapGet("/{documentId:guid}", (Guid documentId) =>
         File.Exists(pdfDocumentPath) ?
             Results.Text(File.ReadAllText(pdfDocumentPath), "text/html", Encoding.UTF8, 200) :
             Results.NotFound();
-}).WithName("getDocument").WithOpenApi();
+}).ExcludeFromDescription();
 
 app.MapPost("/from-base64", async (HttpContext context, HtmlRequest template, PlaywrightService playwright) =>
 {
