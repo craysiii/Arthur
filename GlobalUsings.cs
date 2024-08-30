@@ -1,6 +1,7 @@
 ﻿global using System.Text.Json.Serialization;
 global using System.ComponentModel.DataAnnotations;
 global using System.Text;
+global using System.Net;
 
 global using Microsoft.OpenApi.Models;
 global using Microsoft.Playwright;

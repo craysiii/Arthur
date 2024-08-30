@@ -50,8 +50,14 @@ app.UseSwaggerUI();
 app.MapGet("/", () => "Welcome to Arthur.")
     .ExcludeFromDescription();
 
-app.MapGet("/{documentId:guid}", (Guid documentId) =>
+app.MapGet("/{documentId:guid}", (HttpContext context, Guid documentId) =>
 {
+    // Only allow requests from localhost to avoid actors grabbing HTML files
+    if (!context.Connection.RemoteIpAddress!.Equals(IPAddress.Parse("127.0.0.1")))
+    {
+        return Results.Unauthorized();
+    }
+    
     var pdfDocumentPath = Path.Join(Path.GetTempPath(), $"{documentId}.html");
     return
         File.Exists(pdfDocumentPath) ?
