@@ -4,3 +4,5 @@
     restart: unless-stopped
     ports:
       - 9650:8080
+    # environment:
+    #   API_KEY: some-complex-string

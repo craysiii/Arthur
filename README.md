@@ -71,13 +71,17 @@ services:
     restart: unless-stopped
     ports:
       - 9650:8080
+    # environment:
+    #   API_KEY: some-complex-string
 ```
+
+## Authentication
+
+An extremely simple form of API authentication can be achieved by setting an `API_KEY` environment variable within your environment, and then passing the same value in the `API_KEY` header in your requests.
 
 ## Security Considerations
 
-Currently the docker container is configured to run as `root`. *This is bad.* I need to figure out how to bypass it, but I would not expose this to the public internet.
-
-Our instance sits behind a Cloudflare Tunnel with Access tied to a Service Auth Token.
+Currently, the docker container is configured to run as `root`. *This is bad.* It is due to Playwright's requirement to run apt-get within the container so that it can install the appropriate version of Chromium during start-up. I would highly recommend using the `API_KEY` option.
 
 ## License
 
